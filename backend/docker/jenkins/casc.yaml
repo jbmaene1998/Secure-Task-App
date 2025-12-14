@@ -1,0 +1,34 @@
+jenkins:
+  systemMessage: "Secure Task App - Auto CI/CD"
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: true
+  authorizationStrategy:
+    unsecured: {}
+
+security:
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+
+jobs:
+  - script: >
+      pipelineJob('Secure-Task-App') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/jbmaene1998/Secure-Task-App.git')
+                }
+                branch('*/master')
+              }
+            }
+            scriptPath('Jenkinsfile')
+          }
+        }
+        triggers {
+          // poll SCM every minute
+          scm('H/1 * * * *')
+        }
+      }
